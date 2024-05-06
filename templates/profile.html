@@ -1,0 +1,15 @@
+{% extends "baseTemplate.html" %}
+
+{% block content %}
+    {% if username %}
+        <ul class="list-group col-lg-3">
+          <li class="list-group-item">Username: {{ username }}</li>
+          <li class="list-group-item">Password: {{ password }}</li>
+          <li class="list-group-item">Gender: {{ gender }}</li>
+        </ul>
+    {% else %}
+        <h2 class="text-center">
+            You are not logged in!
+        </h2>
+    {% endif %}
+{% endblock %}
