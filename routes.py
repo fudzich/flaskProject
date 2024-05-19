@@ -1,12 +1,16 @@
 import re
 
-from app import app
+from app import app, User, Gender
 from flask import request, redirect, render_template, abort, session
 from flask import make_response
 import random
 from forms import LoginForm
 
 flag = True
+
+un = 'username'
+p = 'password'
+g = 'gender'
 
 @app.before_request
 def before_request():
@@ -48,21 +52,30 @@ def error_test():
 
 @app.route('/form', methods=['GET', 'POST'])
 def test_form():
+    global un, p, g
     form = LoginForm()
     if form.validate_on_submit():
-        session['username'] = form.username.data
-        session['password'] = form.password.data
-        session['gender'] = form.gender.data
-        return redirect('/profile')
+        # session['username'] = form.username.data
+        # session['password'] = form.password.data
+        # session['gender'] = form.gender.data
+        user = User.query.filter_by(username=form.username.data, password=form.password.data).first()
+        if user is not None:
+            un = user.username
+            p = user.password
+            g = Gender.query.get(user.gender_id).name
+            return redirect('/profile')
+        else:
+            return redirect('/form')
     return render_template('formTemplate.html', form=form)
 
 @app.route('/profile')
 def profile_page():
-    username = session.get('username')
-    password = session.get('password')
-    gender = session.get('gender')
+    username = un
+    password = p
+    gender = g
     print(username, password, gender)
-    if username == None:
+    if username is None:
         return render_template('profile.html')
     else:
-        return render_template('profile.html', username=username, password=password, gender=gender)
+        return render_template('profile.html',
+                               username=username, password=password, gender=gender)
