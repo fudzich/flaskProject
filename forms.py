@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import *
-from wtforms.validators import DataRequired, EqualTo
+from wtforms.validators import DataRequired, EqualTo, Email
 
 
 class LoginForm(FlaskForm):
@@ -12,3 +12,7 @@ class LoginForm(FlaskForm):
     #                      choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')],
     #                      validators=[DataRequired()])
     submit = SubmitField('Login')
+
+class MailForm(FlaskForm):
+    mail = EmailField('Mail: ', validators=[DataRequired(), Email()])
+    submit = SubmitField('Send Email')

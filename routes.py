@@ -1,10 +1,11 @@
 import re
 
-from app import app, User, Gender
+from app import app, User, Gender, mail
 from flask import request, redirect, render_template, abort, session
 from flask import make_response
 import random
-from forms import LoginForm
+from forms import LoginForm, MailForm
+from flask_mail import Message
 
 flag = True
 
@@ -79,3 +80,19 @@ def profile_page():
     else:
         return render_template('profile.html',
                                username=username, password=password, gender=gender)
+
+@app.route('/mail', methods=['GET', 'POST'])
+def mail_page():
+    form = MailForm()
+    if form.validate_on_submit():
+        recipient = form.mail.data
+        send_mail(recipient, 'Test email', 'test_mail')
+        return redirect('/')
+    return render_template('mailForm.html', form=form)
+
+def send_mail(to, subject, template):
+    msg = Message(subject,
+                  sender="app.config['MAIL_USERNAME']",
+                  recipients=[to])
+    msg.body = render_template(template + '.txt')
+    mail.send(msg)

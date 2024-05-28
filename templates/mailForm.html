@@ -1,0 +1,11 @@
+{% extends "baseTemplate.html" %}
+
+{% block content %}
+    <div class="form form-horizontal" method="post" role="form">
+        <form method="post">
+            {{ form.hidden_tag() }}
+            {{ form.mail.label }} {{ form.mail() }}
+            {{ form.submit() }}
+        </form>
+    </div>
+{% endblock %}

@@ -2,6 +2,7 @@ from flask import Flask
 
 import os
 from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail, Message
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -10,11 +11,20 @@ app.config['SECRET_KEY'] = 'very secret key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:password@localhost/flaskproject_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+app.config['Mail_SERVER'] = 'smtp.yandex.ru'
+app.config['Mail_PORT'] = 465
+app.config['Mail_USERNAME'] = "fudz1ch@yandex.ru"
+app.config['MAIL_PASSWORD'] = "lffwjuswhampduqd"
+app.config['Mail_USE_TLS'] = True
+app.config['Mail_USE_SSL'] = False
+
 # @app.route('/')
 # def hello_world():  # put application's code here
 #     return 'Hello World!'
 
 db = SQLAlchemy(app)
+mail = Mail(app)
+
 class Test(db.Model):
     __tablename__ = 'test'
     id = db.Column(db.Integer, primary_key=True)
@@ -45,3 +55,15 @@ if __name__ == '__main__':
     app.run()
 
 import routes
+
+@app.route('/qs')
+def send():
+    message = Message(
+        subject='Subject Test!',
+        recipients=['fudz1ch@yandex.ru'],
+        sender='fudz1ch@yandex.ru'
+    )
+    message.body = "BODY TEST!"
+    mail.send(message)
+
+    return "Message sent!"
