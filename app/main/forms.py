@@ -13,6 +13,7 @@ class LoginForm(FlaskForm):
     #                      validators=[DataRequired()])
     submit = SubmitField('Login')
 
+
 class MailForm(FlaskForm):
     mail = EmailField('Mail: ', validators=[DataRequired(), Email()])
     submit = SubmitField('Send Email')

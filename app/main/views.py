@@ -1,11 +1,12 @@
 import re
-
-from app import app, User, Gender, mail
-from flask import request, redirect, render_template, abort, session
-from flask import make_response
 import random
-from forms import LoginForm, MailForm
+from flask import request, redirect, render_template, abort, make_response
 from flask_mail import Message
+from app.models import User, Gender
+from app.main.forms import LoginForm, MailForm
+from .. import mail
+from . import main
+
 
 flag = True
 
@@ -14,7 +15,7 @@ p = 'password'
 g = 'gender'
 
 
-@app.before_request
+@main.before_request
 def before_request():
     global flag
     path = request.path
@@ -26,38 +27,30 @@ def before_request():
         return response
 
 
-@app.route('/')
+@main.route('/')
 def hello_world():
     return render_template('mainPage.html')
 
 
-@app.route('/index')
+@main.route('/index')
 def index():
     user = {"username": "Alex"}
     return render_template('index.html', user = user)
 
 
-@app.route('/rp/<name>')
+@main.route('/rp/<name>')
 def rp(name):
     #return "This is a random page made for {}!".format(name)
     return render_template('person.html', name = name)
 
-# @app.errorhandler(Exception)
-# def error_page(e):
-#     if re.search("404", str(e)):
-#         return redirect('/')
-#     else:
-#         print(e)
-#         return 'OOPS! Something went wrong'
 
-
-@app.route('/test_e')
+@main.route('/test_e')
 def error_test():
     abort(500)
-    return "somethin somethin"
+#    return "something-something"
 
 
-@app.route('/form', methods=['GET', 'POST'])
+@main.route('/form', methods=['GET', 'POST'])
 def test_form():
     global un, p, g
     form = LoginForm()
@@ -76,7 +69,7 @@ def test_form():
     return render_template('formTemplate.html', form=form)
 
 
-@app.route('/profile')
+@main.route('/profile')
 def profile_page():
     username = un
     password = p
@@ -89,7 +82,7 @@ def profile_page():
                                username=username, password=password, gender=gender)
 
 
-@app.route('/mail', methods=['GET', 'POST'])
+@main.route('/mail', methods=['GET', 'POST'])
 def mail_page():
     form = MailForm()
     if form.validate_on_submit():
