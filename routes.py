@@ -13,6 +13,7 @@ un = 'username'
 p = 'password'
 g = 'gender'
 
+
 @app.before_request
 def before_request():
     global flag
@@ -24,14 +25,17 @@ def before_request():
         response.set_cookie('flag', str(random.randrange(1000)))
         return response
 
+
 @app.route('/')
 def hello_world():
     return render_template('mainPage.html')
+
 
 @app.route('/index')
 def index():
     user = {"username": "Alex"}
     return render_template('index.html', user = user)
+
 
 @app.route('/rp/<name>')
 def rp(name):
@@ -46,10 +50,12 @@ def rp(name):
 #         print(e)
 #         return 'OOPS! Something went wrong'
 
+
 @app.route('/test_e')
 def error_test():
     abort(500)
     return "somethin somethin"
+
 
 @app.route('/form', methods=['GET', 'POST'])
 def test_form():
@@ -69,6 +75,7 @@ def test_form():
             return redirect('/form')
     return render_template('formTemplate.html', form=form)
 
+
 @app.route('/profile')
 def profile_page():
     username = un
@@ -81,6 +88,7 @@ def profile_page():
         return render_template('profile.html',
                                username=username, password=password, gender=gender)
 
+
 @app.route('/mail', methods=['GET', 'POST'])
 def mail_page():
     form = MailForm()
@@ -89,6 +97,7 @@ def mail_page():
         send_mail(recipient, 'Test email', 'test_mail')
         return redirect('/')
     return render_template('mailForm.html', form=form)
+
 
 def send_mail(to, subject, template):
     msg = Message(subject,

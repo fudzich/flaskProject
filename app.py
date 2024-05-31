@@ -11,16 +11,12 @@ app.config['SECRET_KEY'] = 'very secret key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:password@localhost/flaskproject_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-app.config['Mail_SERVER'] = 'smtp.yandex.ru'
-app.config['Mail_PORT'] = 465
-app.config['Mail_USERNAME'] = "fudz1ch@yandex.ru"
-app.config['MAIL_PASSWORD'] = "lffwjuswhampduqd"
+app.config['Mail_SERVER'] = 'smtp.googlemail.com'
+app.config['Mail_PORT'] = 587
+app.config['Mail_USERNAME'] = "alextesttestovik@gmail.com"
+app.config['MAIL_PASSWORD'] = "jhkq wdsa hbei uyil"
 app.config['Mail_USE_TLS'] = True
 app.config['Mail_USE_SSL'] = False
-
-# @app.route('/')
-# def hello_world():  # put application's code here
-#     return 'Hello World!'
 
 db = SQLAlchemy(app)
 mail = Mail(app)
@@ -33,6 +29,7 @@ class Test(db.Model):
     def __repr__(self):
         return '<Test %r>' % self.name
 
+
 class Gender(db.Model):
     __tablename__ = 'genders'
     id = db.Column(db.Integer, primary_key=True)
@@ -40,6 +37,7 @@ class Gender(db.Model):
     users = db.relationship('User', backref='gender')
     def __repr__(self):
         return '<Gender %r>' % self.name
+
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -51,19 +49,8 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
+
 if __name__ == '__main__':
     app.run()
 
 import routes
-
-@app.route('/qs')
-def send():
-    message = Message(
-        subject='Subject Test!',
-        recipients=['fudz1ch@yandex.ru'],
-        sender='fudz1ch@yandex.ru'
-    )
-    message.body = "BODY TEST!"
-    mail.send(message)
-
-    return "Message sent!"
