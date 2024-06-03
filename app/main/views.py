@@ -2,17 +2,18 @@ import re
 import random
 from flask import request, redirect, render_template, abort, make_response
 from flask_mail import Message
+from flask_login import login_required, current_user
 from app.models import User, Gender
-from app.main.forms import LoginForm, MailForm
+from app.main.forms import MailForm
 from .. import mail
 from . import main
 
 
 flag = True
 
-un = 'username'
-p = 'password'
-g = 'gender'
+# un = 'username'
+# p = 'password'
+# g = 'gender'
 
 
 @main.before_request
@@ -50,36 +51,35 @@ def error_test():
 #    return "something-something"
 
 
-@main.route('/form', methods=['GET', 'POST'])
-def test_form():
-    global un, p, g
-    form = LoginForm()
-    if form.validate_on_submit():
-        # session['username'] = form.username.data
-        # session['password'] = form.password.data
-        # session['gender'] = form.gender.data
-        user = User.query.filter_by(username=form.username.data, password=form.password.data).first()
-        if user is not None:
-            un = user.username
-            p = user.password
-            g = Gender.query.get(user.gender_id).name
-            return redirect('/profile')
-        else:
-            return redirect('/form')
-    return render_template('formTemplate.html', form=form)
+# @main.route('/form', methods=['GET', 'POST'])
+# def test_form():
+#     global un, p, g
+#     form = LoginForm()
+#     if form.validate_on_submit():
+#         # session['username'] = form.username.data
+#         # session['password'] = form.password.data
+#         # session['gender'] = form.gender.data
+#         user = User.query.filter_by(username=form.username.data, password=form.password.data).first()
+#         if user is not None:
+#             un = user.username
+#             p = user.password
+#             g = Gender.query.get(user.gender_id).name
+#             return redirect('/profile')
+#         else:
+#             return redirect('/form')
+#     return render_template('formTemplate.html', form=form)
 
 
 @main.route('/profile')
+@login_required
 def profile_page():
-    username = un
-    password = p
-    gender = g
-    print(username, password, gender)
-    if username is None:
+    user = current_user
+    print("in profile:" + user.username, user.gender)
+    if user.username is None:
         return render_template('profile.html')
     else:
         return render_template('profile.html',
-                               username=username, password=password, gender=gender)
+                               username=user.username, password=user.password, gender=user.gender)
 
 
 @main.route('/mail', methods=['GET', 'POST'])
@@ -98,3 +98,9 @@ def send_mail(to, subject, template):
                   recipients=[to])
     msg.body = render_template(template + '.txt')
     mail.send(msg)
+
+
+@main.route('/locked')
+@login_required
+def locked_page():
+    return "Classified Info! For Authorised Only!"

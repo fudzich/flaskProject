@@ -4,6 +4,7 @@ import unittest
 app = create_app('default')
 print('hi')
 
+
 @app.cli.command('test')
 def test():
     tests = unittest.TestLoader().discover('tests')
