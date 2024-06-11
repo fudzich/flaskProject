@@ -3,11 +3,12 @@ import random
 from flask import request, redirect, render_template, abort, make_response
 from flask_mail import Message
 from flask_login import login_required, current_user
+
 from app.models import User, Gender
 from app.main.forms import MailForm
 from .. import mail
 from . import main
-
+from ..decorators import admin_required
 
 flag = True
 
@@ -30,6 +31,7 @@ def before_request():
 
 @main.route('/')
 def hello_world():
+    user = current_user
     return render_template('mainPage.html')
 
 
@@ -79,7 +81,7 @@ def profile_page():
         return render_template('profile.html')
     else:
         return render_template('profile.html',
-                               username=user.username, password=user.password, gender=user.gender)
+                               username=user.username, role=user.role, gender=user.gender)
 
 
 @main.route('/mail', methods=['GET', 'POST'])
@@ -102,5 +104,6 @@ def send_mail(to, subject, template):
 
 @main.route('/locked')
 @login_required
+@admin_required
 def locked_page():
     return "Classified Info! For Authorised Only!"

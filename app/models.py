@@ -13,6 +13,17 @@ class Test(db.Model):
         return '<Test %r>' % self.name
 
 
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(50))
+    slug = db.Column(db.String(50), unique=True)
+    users = db.relationship('User', backref='role')
+
+    def __repr__(self):
+        return self.name
+
+
 class Gender(db.Model):
     __tablename__ = 'genders'
     id = db.Column(db.Integer, primary_key=True)
@@ -29,6 +40,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(50), unique=True, index=True)
     password = db.Column(db.String(128))
     gender_id = db.Column(db.Integer, db.ForeignKey('genders.id'))
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
     @property
     def password_read(self):
@@ -39,6 +51,9 @@ class User(db.Model, UserMixin):
 
     def set_password(self, password):
         self.password = generate_password_hash(password, method='pbkdf2:sha256')
+
+    def has_role(self, role_id):
+        return Role.query.get(role_id) == self.role_id
 
     def __repr__(self):
         return '<User %r>' % self.username

@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash
 from . import auth
 from .forms import LoginForm, RegistrationForm
 from .. import db
-from ..models import User, Gender
+from ..models import User, Gender, Role
 
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
@@ -33,6 +33,7 @@ def register():
         if google_auth():
             user = User(username=form.username.data,
 #                       password=form.password.data,
+                        role=Role.query.get(2),
                         gender=Gender.query.get(form.gender.data))
             db.session.add(user)
             user.set_password(form.password.data)
