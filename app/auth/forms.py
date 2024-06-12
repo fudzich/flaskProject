@@ -1,10 +1,11 @@
 from flask_wtf import FlaskForm
 from wtforms import *
-from wtforms.validators import DataRequired, EqualTo, Email, Length
+from wtforms.validators import DataRequired, EqualTo, Length
 
 from app.models import User
 
 
+#Форма для входа в аккаунт
 class LoginForm(FlaskForm):
     username = StringField('Username: ', validators=[DataRequired(), Length(min=1, max=50)])
     password = PasswordField('Password: ', validators=[DataRequired(), Length(min=1, max=50)])
@@ -14,6 +15,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Login')
 
 
+#Форма для регистрации
 class RegistrationForm(FlaskForm):
     username = StringField('Username: ', validators=[DataRequired()])
     password = PasswordField('Password: ', validators=[DataRequired()])

@@ -2,11 +2,13 @@
 
 {% block content %}
     {% if username %}
-        <ul class="list-group col-lg-3">
-          <li class="list-group-item">Username: {{ username }}</li>
-          <li class="list-group-item">Role: {{ role }}</li>
-          <li class="list-group-item">Gender: {{ gender }}</li>
-        </ul>
+        <div class="d-flex justify-content-center">
+            <ul class="list-group col-lg-3">
+                <li class="list-group-item">Username: {{ username }}</li>
+                <li class="list-group-item">Gender: {{ gender }}</li>
+                <li class="list-group-item">Role: {{ role }}</li>
+            </ul>
+        </div>
     {% else %}
         <h2 class="text-center">
             You are not logged in!

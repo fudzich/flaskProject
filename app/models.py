@@ -1,9 +1,10 @@
 from flask_login import UserMixin
-
-from . import db
+from .exts import db
 from werkzeug.security import generate_password_hash, check_password_hash
-from . import login_manager
+from .exts import login_manager
 
+
+#Тестовая ДБ
 class Test(db.Model):
     __tablename__ = 'test'
     id = db.Column(db.Integer, primary_key=True)
@@ -13,6 +14,7 @@ class Test(db.Model):
         return '<Test %r>' % self.name
 
 
+#Дб с ролями пользователей
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -24,6 +26,7 @@ class Role(db.Model):
         return self.name
 
 
+#ДБ с полами пользователей
 class Gender(db.Model):
     __tablename__ = 'genders'
     id = db.Column(db.Integer, primary_key=True)
@@ -34,6 +37,7 @@ class Gender(db.Model):
         return self.name
 
 
+#ДБ с пользователями
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)

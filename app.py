@@ -2,9 +2,9 @@ from app import create_app
 import unittest
 
 app = create_app('default')
-print('hi')
 
 
+#Вызов тестов
 @app.cli.command('test')
 def test():
     tests = unittest.TestLoader().discover('tests')

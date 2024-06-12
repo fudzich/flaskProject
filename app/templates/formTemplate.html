@@ -6,16 +6,18 @@
     <title>Form</title>
 </head>
 <body>
-    <h1>LOGIN</h1>
-    <div class="form form-horizontal" method="post" role="form">
+    <div class="m-3">
+    <h1 class="m3">LOGIN</h1>
+    </div>
+    <div class="form form-horizontal m-3" method="post" role="form">
         <form method="post">
             {{ form.hidden_tag() }}
             {{ form.username.label }}   {{ form.username() }}
-{#            {{ form.gender.label }}     {{ form.gender() }}#}
             {{ form.password.label }}   {{ form.password() }}
             {{ form.password2.label }}  {{ form.password2() }}
             {{ form.submit() }}
         </form>
     </div>
+    <a class="btn btn-danger m-3" href="/auth/reg">Don't have an account</a>
 </body>
 </html>

@@ -1,17 +1,16 @@
 from flask import redirect, render_template, url_for
 from flask_login import login_user, login_required, logout_user
-from werkzeug.security import generate_password_hash
 
 from . import auth
 from .forms import LoginForm, RegistrationForm
 from .. import db
 from ..models import User, Gender, Role
-
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-
 import webbrowser
 
+
+#Путь ко входу в аккаунт
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -25,6 +24,7 @@ def login():
     return render_template('formTemplate.html', form=form)
 
 
+#Путь к регистрации
 @auth.route('/reg', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
@@ -32,7 +32,6 @@ def register():
         webbrowser.open_new_tab(url_for('auth.google_auth'))
         if google_auth():
             user = User(username=form.username.data,
-#                       password=form.password.data,
                         role=Role.query.get(2),
                         gender=Gender.query.get(form.gender.data))
             db.session.add(user)
@@ -41,10 +40,10 @@ def register():
             return redirect(url_for('auth.login'))
         else:
             return render_template('regTemplate.html', form=form)
-    print(form.errors)
     return render_template('regTemplate.html', form=form)
 
 
+#Путь к подтверждению аккаунта с помощью аакаунта гугл
 @auth.route('/oauth')
 def google_auth():
     flow = (InstalledAppFlow.from_client_secrets_file(
@@ -59,6 +58,7 @@ def google_auth():
     return user_info['verified_email']
 
 
+#Путь к выходу из аккаунта
 @auth.route('/logout')
 @login_required
 def logout():

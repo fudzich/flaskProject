@@ -30,6 +30,7 @@ class TestingConfig(Config):
                               'mysql://root:@localhost/flask_education'
 
 
+#Варианты конвигов в зависимости от требований
 config = {
     'default': DevelopmentConfig,
     'development': DevelopmentConfig,
