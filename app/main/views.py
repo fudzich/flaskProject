@@ -28,12 +28,21 @@ def before_request():
 #Главная страница вебсайта
 @main.route('/', methods=['GET', 'POST'])
 def hello_world():
+    """
+    Renders the home page
+    :return: main page
+    """
     return render_template('mainPage.html', list=list)
 
 
 #Страница создающая текст на основе ссылки
 @main.route('/rp/<name>')
 def rp(name):
+    """
+    Takes a name parameter and returns HTML response with a greeting message
+    :param name: The inputted name
+    :return: HTML response
+    """
     return render_template('person.html', name = name)
 
 
@@ -47,6 +56,10 @@ def error_test():
 @main.route('/profile')
 @login_required
 def profile_page():
+    """
+    Renders the profile page of the user
+    :return: profile page
+    """
     user = current_user
     if user.username is None:
         return render_template('profile.html')
@@ -58,6 +71,10 @@ def profile_page():
 #Страница отправляющая письмо на почту
 @main.route('/mail', methods=['GET', 'POST'])
 def mail_page():
+    """
+    Renders the Mail page of the user that allows to send emails
+    :return: Mail page
+    """
     form = MailForm()
     if form.validate_on_submit():
         recipient = form.mail.data

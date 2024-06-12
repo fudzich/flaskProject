@@ -13,6 +13,10 @@ import webbrowser
 #Путь ко входу в аккаунт
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    Login data processing
+    :return: login form
+    """
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
@@ -27,6 +31,10 @@ def login():
 #Путь к регистрации
 @auth.route('/reg', methods=['GET', 'POST'])
 def register():
+    """
+    Registration data processing
+    :return: registration form
+    """
     form = RegistrationForm()
     if form.validate_on_submit():
         webbrowser.open_new_tab(url_for('auth.google_auth'))
@@ -46,6 +54,10 @@ def register():
 #Путь к подтверждению аккаунта с помощью аакаунта гугл
 @auth.route('/oauth')
 def google_auth():
+    """
+    Google authorization
+    :return: user verification
+    """
     flow = (InstalledAppFlow.from_client_secrets_file(
         'client_secret.json',
         scopes=['openid', 'https://www.googleapis.com/auth/userinfo.email',
@@ -62,5 +74,9 @@ def google_auth():
 @auth.route('/logout')
 @login_required
 def logout():
+    """
+    Logout user
+    :return: main page
+    """
     logout_user()
     return redirect(url_for('main.hello_world'))
