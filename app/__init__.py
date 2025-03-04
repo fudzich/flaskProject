@@ -19,6 +19,8 @@ login_manager.login_view = 'auth.login'
 admin.add_view(AdminView(User, db.session))
 admin.add_view(AdminView(Role, db.session))
 admin.add_view(AdminView(Gender, db.session))
+admin.add_view(AdminView(Thread, db.session))
+admin.add_view(AdminView(Post, db.session))
 
 
 def register_extensions(app):

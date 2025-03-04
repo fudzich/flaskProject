@@ -2,6 +2,33 @@
 
 {% block content %}
     <h2 class="text-center">
-        I am the Main Page of this website
+        Threads
     </h2>
+
+        <ul class="list-unstyled">
+            <li>
+                {% for thread in threads %}
+                    <div class="d-flex justify-content-center">
+                        <p>
+                            <a class="btn" href="/thread/{{ thread.name }}">{{ thread.name }}</a>
+                        </p>
+                    </div>
+                {% endfor %}
+            </li>
+        </ul>
+
+    {% if current_user.is_authenticated %}
+        <h5 class="text-center">
+            Create New Thread
+        </h5>
+        <div class="d-flex justify-content-center">
+            <div class="form form-horizontal" method="post" role="form">
+                <form method="post">
+                    {{ form.hidden_tag() }}
+                    {{ form.name.label }}   {{ form.name() }}
+                    {{ form.submit() }}
+                </form>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}

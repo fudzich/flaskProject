@@ -8,7 +8,7 @@
 <body>
     <div class = "bg-dark text-white">
         <h1 class="text-center">
-            USELESS WEBSITE
+            FORUM WEBSITE
         </h1>
 
         <div class="d-flex justify-content-center m-3">
@@ -16,12 +16,15 @@
                 {% if current_user.is_authenticated %}
                     <li class="list-group-item"><a class="btn" href="/" >Home</a></li>
                     <li class="list-group-item"><a class="btn" href="/profile" role="button">Profile</a></li>
-                    <li class="list-group-item"><a class="btn" href="/mail" role="button">Send Mail</a></li>
+                    {% if current_user.role_id == 1 or current_user.role_id == 3 %}
+                        <li class="list-group-item"><a class="btn" href="/mail" role="button">Send Mail</a></li>
+                    {% endif %}
                     {% if current_user.role_id == 1 %}
                         <li class="list-group-item"><a class="btn" href="/admin" role="button">Admin</a></li>
                     {% endif %}
                     <li class="list-group-item"><a class="btn" href="/auth/logout" role="button">Logout</a></li>
                 {% else %}
+                    <li class="list-group-item"><a class="btn" href="/" >Home</a></li>
                     <li class="list-group-item"><a class="btn" href="/auth/login">Login</a></li>
                     <li class="list-group-item"><a class="btn" href="/auth/reg">Create Account</a></li>
                 {% endif %}

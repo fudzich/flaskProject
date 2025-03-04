@@ -3,9 +3,11 @@ import random
 from flask import request, redirect, render_template, abort, make_response
 from flask_mail import Message
 from flask_login import login_required, current_user
-from app.main.forms import MailForm
+from app.main.forms import MailForm, MessageForm, ThreadForm
 from .. import mail
 from . import main
+from ..models import Post, User, Thread, Role
+from .. import db
 from ..decorators import admin_required
 
 
@@ -29,10 +31,67 @@ def before_request():
 @main.route('/', methods=['GET', 'POST'])
 def hello_world():
     """
-    Renders the home page
+    Renders the home page with all threads
     :return: main page
     """
-    return render_template('mainPage.html', list=list)
+    threads = Thread.query.all()
+    form = ThreadForm()
+
+    if form.validate_on_submit():
+        thread = Thread(name=form.name.data)
+        db.session.add(thread)
+        db.session.commit()
+        return redirect("/")
+    return render_template('mainPage.html', list=list, threads = threads, form=form)
+
+@main.route('/thread/<thread_name>', methods=['GET', 'POST'])
+def thread_page(thread_name):
+    """
+    Renders the page with posts
+    :return: thread page
+    """
+    exists = Thread.query.filter_by(name=thread_name).first() is not None
+    posts = Post.query.all()
+    users = User.query.all()
+    roles = Role.query.all()
+    form = MessageForm()
+
+    if exists:
+        thread_id = Thread.query.filter_by(name=thread_name).first().id
+
+        if form.validate_on_submit():
+            post = Post(sender_id = current_user.id, input = form.body.data, thread_id = thread_id)
+            db.session.add(post)
+            db.session.commit()
+            return redirect("/thread/" + thread_name)
+
+        return render_template('thread.html', list=list, posts=posts, users=users,
+                                    form = form, thread_name = thread_name, thread_id = thread_id, roles = roles)
+    else:
+        return render_template('noThread.html')
+
+
+@main.route('/thread/<thread_name>/delete/<post_id>', methods=['GET', 'POST'])
+def delete_post_page(thread_name,post_id):
+    print()
+    if current_user.is_authenticated:
+        exists = Post.query.filter_by(id=post_id).first() is not None
+        if exists:
+
+            sender_id = Post.query.filter_by(id=post_id).first().sender_id
+            role_id = User.query.filter_by(id=sender_id).first().role_id
+
+            print(current_user.role_id)
+
+            if (current_user.role_id == 1 or (current_user.role_id == 3 and role_id != 1)
+                    or current_user.role_id == sender_id):
+                db.session.query(Post).filter(Post.id == post_id).delete()
+                db.session.commit()
+                return redirect("/thread/" + thread_name)
+
+
+    return render_template('notAuth.html')
+
 
 
 #Страница создающая текст на основе ссылки
@@ -75,13 +134,17 @@ def mail_page():
     Renders the Mail page of the user that allows to send emails
     :return: Mail page
     """
-    form = MailForm()
-    if form.validate_on_submit():
-        recipient = form.mail.data
-        template = form.body.data
-        send_mail(recipient, 'Test email', template)
-        return redirect('/')
-    return render_template('mailForm.html', form=form)
+    if current_user.is_authenticated:
+        if current_user.role_id == 1 or current_user.role_id == 3:
+            form = MailForm()
+            if form.validate_on_submit():
+                recipient = form.mail.data
+                template = form.body.data
+                send_mail(recipient, 'Forum Website', template)
+                return redirect('/')
+            return render_template('mailForm.html', form=form)
+
+    return render_template('notAuth.html')
 
 
 def send_mail(to, subject, template):

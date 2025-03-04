@@ -37,17 +37,17 @@ def register():
     """
     form = RegistrationForm()
     if form.validate_on_submit():
-        webbrowser.open_new_tab(url_for('auth.google_auth'))
-        if google_auth():
-            user = User(username=form.username.data,
+        #webbrowser.open_new_tab(url_for('auth.google_auth'))
+        #if google_auth():
+        user = User(username=form.username.data,
                         role=Role.query.get(2),
                         gender=Gender.query.get(form.gender.data))
-            db.session.add(user)
-            user.set_password(form.password.data)
-            db.session.commit()
-            return redirect(url_for('auth.login'))
-        else:
-            return render_template('regTemplate.html', form=form)
+        db.session.add(user)
+        user.set_password(form.password.data)
+        db.session.commit()
+        return redirect(url_for('auth.login'))
+        #else:
+        #    return render_template('regTemplate.html', form=form)
     return render_template('regTemplate.html', form=form)
 
 

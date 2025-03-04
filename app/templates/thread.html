@@ -1,0 +1,47 @@
+{% extends "baseTemplate.html" %}
+
+{% block content %}
+    <h2 class="text-center">
+    {{ thread_name }} Thread
+    </h2>
+
+    {% for post in posts %}
+        {% if post.thread_id == thread_id %}
+            <div class="mt-3 d-flex justify-content-center">
+                <ul class="list-group list-group-horizontal">
+                    <li class="list-group-item list-group-item-dark">
+                        {{ users[post.sender_id - 1].username }} ( {{ roles[users[post.sender_id - 1].role_id - 1].name }} )
+                    </li>
+                    <li class="list-group-item">
+                        {{ post.input }}
+                    </li>
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.role_id == 1 or current_user.role_id == 3
+                                or current_user.role_id == post.sender_id %}
+                            <li class="list-group-item">
+                                <a class="btn btn-danger" href="/thread/{{ thread_name }}/delete/{{post.id}}" >Delete</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+            </div>
+        {% endif %}
+    {% endfor %}
+
+
+    <div class="mt-5 d-flex justify-content-center">
+        {% if current_user.is_authenticated %}
+            <div class="form form-horizontal" method="post" role="form">
+                <form method="post">
+                    {{ form.hidden_tag() }}
+                    <div class="mt-3 d-flex justify-content-center">
+                    {{ form.body() }}
+                    </div>
+                    <div class="mt-3 d-flex justify-content-center">
+                    {{ form.submit() }}
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

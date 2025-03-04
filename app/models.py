@@ -46,6 +46,8 @@ class User(db.Model, UserMixin):
     gender_id = db.Column(db.Integer, db.ForeignKey('genders.id'))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
+    senders = db.relationship('Post', backref='user')
+
     @property
     def password_read(self):
         raise AttributeError('You cannot read the password attribute')
@@ -61,6 +63,27 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return '<User %r>' % self.username
+
+
+class Thread(db.Model):
+    __tablename__ = 'threads'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+    posts = db.relationship('Post', backref='thread')
+
+    def __repr__(self):
+        return '<Thread %r>' % self.name
+
+
+class Post(db.Model):
+    __tablename__ = 'posts'
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    input = db.Column(db.String(500))
+    thread_id = db.Column(db.Integer, db.ForeignKey('threads.id'))
+
+    def __repr__(self):
+        return self.input
 
 
 @login_manager.user_loader
