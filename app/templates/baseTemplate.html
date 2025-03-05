@@ -21,6 +21,7 @@
                     {% endif %}
                     {% if current_user.role_id == 1 %}
                         <li class="list-group-item"><a class="btn" href="/admin" role="button">Admin</a></li>
+                        <li class="list-group-item"><a class="btn" href="/admin/roles" role="button">Roles</a></li>
                     {% endif %}
                     <li class="list-group-item"><a class="btn" href="/auth/logout" role="button">Logout</a></li>
                 {% else %}

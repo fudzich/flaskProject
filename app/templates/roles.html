@@ -1,0 +1,25 @@
+{% extends "baseTemplate.html" %}
+
+{% block content %}
+    <h2 class="text-center">
+    Roles
+    </h2>
+
+    <ul class="list-unstyled">
+            <li>
+                {% for user in users %}
+                    <div class="mt-3 d-flex justify-content-center">
+                        <ul class="list-group list-group-horizontal">
+                            <li class="list-group-item list-group-item-dark">{{ user.id }}</li>
+                            <li class="list-group-item">{{ user.username }}</li>
+                            <li class="list-group-item">{{ roles[user.role_id - 1].name }}</li>
+                            <li class="list-group-item">
+                                <a class="btn btn-danger" href="/admin/roles/{{ user.id }}">Change Role</a>
+                            </li>
+                        </ul>
+                    </div>
+                {% endfor %}
+            </li>
+    </ul>
+
+{% endblock %}

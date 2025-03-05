@@ -3,7 +3,7 @@ import random
 from flask import request, redirect, render_template, abort, make_response
 from flask_mail import Message
 from flask_login import login_required, current_user
-from app.main.forms import MailForm, MessageForm, ThreadForm
+from app.main.forms import MailForm, MessageForm, ThreadForm, ChangeRoleForm
 from .. import mail
 from . import main
 from ..models import Post, User, Thread, Role
@@ -73,7 +73,6 @@ def thread_page(thread_name):
 
 @main.route('/thread/<thread_name>/delete/<post_id>', methods=['GET', 'POST'])
 def delete_post_page(thread_name,post_id):
-    print()
     if current_user.is_authenticated:
         exists = Post.query.filter_by(id=post_id).first() is not None
         if exists:
@@ -84,14 +83,56 @@ def delete_post_page(thread_name,post_id):
             print(current_user.role_id)
 
             if (current_user.role_id == 1 or (current_user.role_id == 3 and role_id != 1)
-                    or current_user.role_id == sender_id):
+                    or current_user.id == sender_id):
                 db.session.query(Post).filter(Post.id == post_id).delete()
                 db.session.commit()
                 return redirect("/thread/" + thread_name)
 
+    return render_template('notAuth.html')
+
+
+@main.route('/admin/roles', methods=['GET', 'POST'])
+def admin_roles_page():
+    if current_user.is_authenticated:
+        if current_user.role_id == 1:
+            users = User.query.all()
+            roles = Role.query.all()
+            return render_template('roles.html', users=users, roles=roles)
 
     return render_template('notAuth.html')
 
+
+@main.route('/admin/roles/<user_id>', methods=['GET', 'POST'])
+def admin_roles_change_page(user_id):
+    exists = User.query.filter_by(id=user_id).first() is not None
+    if exists and current_user.is_authenticated:
+        if current_user.role_id == 1:
+            user = User.query.filter_by(id=user_id).first()
+            form = ChangeRoleForm()
+
+            if form.validate_on_submit():
+                user.role_id = form.role.data
+                db.session.commit()
+                return redirect("/admin/roles")
+
+            return render_template('changeRole.html', user=user, form=form)
+
+    return render_template('notAuth.html')
+
+
+@main.route('/thread/delete/<thread_id>', methods=['GET', 'POST'])
+def delete_thread_page(thread_id):
+    if current_user.is_authenticated:
+        exists = Thread.query.filter_by(id=thread_id).first() is not None
+        if exists:
+            if current_user.role_id == 1 or current_user.role_id == 3:
+                db.session.query(Post).filter(Post.thread_id == thread_id).delete()
+                db.session.query(Thread).filter(Thread.id == thread_id).delete()
+                db.session.commit()
+                return redirect("/")
+
+
+    return render_template('notAuth.html')
 
 
 #Страница создающая текст на основе ссылки

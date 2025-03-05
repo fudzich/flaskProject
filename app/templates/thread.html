@@ -8,7 +8,7 @@
     {% for post in posts %}
         {% if post.thread_id == thread_id %}
             <div class="mt-3 d-flex justify-content-center">
-                <ul class="list-group list-group-horizontal">
+                <ul class="list-group list-group-horizontal mw-100">
                     <li class="list-group-item list-group-item-dark">
                         {{ users[post.sender_id - 1].username }} ( {{ roles[users[post.sender_id - 1].role_id - 1].name }} )
                     </li>
@@ -17,7 +17,7 @@
                     </li>
                     {% if current_user.is_authenticated %}
                         {% if current_user.role_id == 1 or current_user.role_id == 3
-                                or current_user.role_id == post.sender_id %}
+                                or current_user.id == post.sender_id %}
                             <li class="list-group-item">
                                 <a class="btn btn-danger" href="/thread/{{ thread_name }}/delete/{{post.id}}" >Delete</a>
                             </li>
@@ -33,13 +33,15 @@
         {% if current_user.is_authenticated %}
             <div class="form form-horizontal" method="post" role="form">
                 <form method="post">
-                    {{ form.hidden_tag() }}
-                    <div class="mt-3 d-flex justify-content-center">
-                    {{ form.body() }}
-                    </div>
-                    <div class="mt-3 d-flex justify-content-center">
-                    {{ form.submit() }}
-                    </div>
+                    <ul class="list-group list-group-horizontal">
+                            {{ form.hidden_tag() }}
+
+                            {{ form.body() }}
+
+
+                            {{ form.submit() }}
+
+                    </ul>
                 </form>
             </div>
         {% endif %}

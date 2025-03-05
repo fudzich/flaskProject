@@ -12,8 +12,13 @@ class MailForm(FlaskForm):
 
 class MessageForm(FlaskForm):
     body = TextAreaField(validators=[DataRequired()])
-    submit = SubmitField('Send Message')
+    submit = SubmitField('Send')
 
 class ThreadForm(FlaskForm):
     name = StringField('Name: ', validators=[DataRequired()])
     submit = SubmitField('Create Thread')
+
+class ChangeRoleForm(FlaskForm):
+    role = SelectField('Role: ', choices=[(1, 'Admin'), (2, 'User'), (3, 'Moderator')],
+                         validators=[DataRequired()])
+    submit = SubmitField('Change Role')
